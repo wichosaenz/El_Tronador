@@ -68,8 +68,12 @@ class ETR_Admin {
         }
 
         return [
-            'page_cache_enabled' => ! empty( $input['page_cache_enabled'] ),
-            'delay_js_enabled'   => ! empty( $input['delay_js_enabled'] ),
+            'page_cache_enabled'            => ! empty( $input['page_cache_enabled'] ),
+            'delay_js_enabled'              => ! empty( $input['delay_js_enabled'] ),
+            'minify_css_enabled'            => ! empty( $input['minify_css_enabled'] ),
+            'minify_js_enabled'             => ! empty( $input['minify_js_enabled'] ),
+            'optimize_css_delivery_enabled' => ! empty( $input['optimize_css_delivery_enabled'] ),
+            'file_optimization_exclusions'  => sanitize_textarea_field( $input['file_optimization_exclusions'] ?? '' ),
         ];
     }
 
@@ -121,12 +125,12 @@ class ETR_Admin {
      */
     public static function get_tabs(): array {
         return [
-            'general' => __( 'General', 'el-tronador' ),
+            'general'           => __( 'General', 'el-tronador' ),
+            'file_optimization' => __( 'Optimización de Archivos', 'el-tronador' ),
             // Future tabs:
-            // 'file_optimization' => __( 'File Optimization', 'el-tronador' ),
-            // 'media'             => __( 'Media', 'el-tronador' ),
-            // 'database'          => __( 'Database', 'el-tronador' ),
-            // 'preload'           => __( 'Preload', 'el-tronador' ),
+            // 'media'    => __( 'Media', 'el-tronador' ),
+            // 'database' => __( 'Database', 'el-tronador' ),
+            // 'preload'  => __( 'Preload', 'el-tronador' ),
         ];
     }
 }

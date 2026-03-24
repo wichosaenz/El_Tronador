@@ -79,6 +79,9 @@ class ETR_Plugin {
 
         $delay_js = new ETR_Delay_Js();
         $this->registry->register( $delay_js );
+
+        $file_optimizer = new ETR_File_Optimizer();
+        $this->registry->register( $file_optimizer );
     }
 
     /**
