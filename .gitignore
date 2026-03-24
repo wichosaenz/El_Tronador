@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+debug.log
+
+# Environment
+.env
+.env.local
+
+# Build artifacts
+*.zip
+*.tar.gz
+
+# WordPress generated cache (runtime, not part of plugin source)
+wp-content/cache/
+wp-content/advanced-cache.php
