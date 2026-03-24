@@ -30,6 +30,7 @@ class ETR_Autoloader {
             'modules'  => [
                 $base . 'modules/page-cache/',
                 $base . 'modules/delay-js/',
+                $base . 'modules/file-optimization/',
             ],
         ];
 

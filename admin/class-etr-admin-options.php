@@ -25,8 +25,12 @@ class ETR_Admin_Options {
      */
     public static function defaults(): array {
         return [
-            'page_cache_enabled' => true,
-            'delay_js_enabled'   => true,
+            'page_cache_enabled'            => true,
+            'delay_js_enabled'              => true,
+            'minify_css_enabled'            => false,
+            'minify_js_enabled'             => false,
+            'optimize_css_delivery_enabled' => false,
+            'file_optimization_exclusions'  => '',
         ];
     }
 

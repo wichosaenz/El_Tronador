@@ -72,6 +72,81 @@ $purge_url   = wp_nonce_url( admin_url( 'admin.php?action=etr_purge_cache' ), 'e
             </table>
         <?php endif; ?>
 
+        <?php if ( 'file_optimization' === $current_tab ) : ?>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Minificar CSS', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[minify_css_enabled]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[minify_css_enabled]"
+                                   value="1"
+                                   <?php checked( $settings['minify_css_enabled'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Minifica archivos CSS locales eliminando comentarios, espacios en blanco y saltos de línea. Los archivos .min.css se omiten automáticamente.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Minificar JS', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[minify_js_enabled]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[minify_js_enabled]"
+                                   value="1"
+                                   <?php checked( $settings['minify_js_enabled'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Minifica archivos JavaScript locales eliminando comentarios y espacios innecesarios. Los archivos .min.js se omiten automáticamente.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Optimizar Entrega de CSS', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[optimize_css_delivery_enabled]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[optimize_css_delivery_enabled]"
+                                   value="1"
+                                   <?php checked( $settings['optimize_css_delivery_enabled'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Carga las hojas de estilo de forma diferida usando preload, eliminando el bloqueo de renderizado. Incluye respaldo con <noscript> para navegadores sin JavaScript.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="etr-file-exclusions">
+                            <?php esc_html_e( 'Excluir Archivos CSS/JS', 'el-tronador' ); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <textarea id="etr-file-exclusions"
+                                  name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[file_optimization_exclusions]"
+                                  class="etr-exclusions-textarea"
+                                  rows="6"><?php echo esc_textarea( $settings['file_optimization_exclusions'] ); ?></textarea>
+                        <p class="description">
+                            <?php esc_html_e( 'Ingresa una URL o palabra clave por línea. Los archivos que coincidan serán ignorados por el minificador y la optimización de entrega CSS. Ejemplo: jquery.js, elementor, mi-plugin/assets/', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        <?php endif; ?>
+
         <?php submit_button( __( 'Save Settings', 'el-tronador' ) ); ?>
     </form>
 
