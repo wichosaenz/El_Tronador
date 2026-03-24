@@ -31,6 +31,7 @@ class ETR_Autoloader {
                 $base . 'modules/page-cache/',
                 $base . 'modules/delay-js/',
                 $base . 'modules/file-optimization/',
+                $base . 'modules/media-optimizer/',
             ],
         ];
 

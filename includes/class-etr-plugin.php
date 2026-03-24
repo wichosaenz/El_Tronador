@@ -82,6 +82,9 @@ class ETR_Plugin {
 
         $file_optimizer = new ETR_File_Optimizer();
         $this->registry->register( $file_optimizer );
+
+        $media_optimizer = new ETR_Media_Optimizer();
+        $this->registry->register( $media_optimizer );
     }
 
     /**

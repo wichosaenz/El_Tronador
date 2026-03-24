@@ -147,6 +147,81 @@ $purge_url   = wp_nonce_url( admin_url( 'admin.php?action=etr_purge_cache' ), 'e
             </table>
         <?php endif; ?>
 
+        <?php if ( 'media' === $current_tab ) : ?>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Lazy Load para Imágenes', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[lazy_images_enabled]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[lazy_images_enabled]"
+                                   value="1"
+                                   <?php checked( $settings['lazy_images_enabled'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Carga las imágenes de forma diferida al hacer scroll usando Intersection Observer. Las primeras 2 imágenes se excluyen automáticamente para proteger la métrica LCP.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Lazy Load para Iframes/Videos', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[lazy_iframes_enabled]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[lazy_iframes_enabled]"
+                                   value="1"
+                                   <?php checked( $settings['lazy_iframes_enabled'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Carga los iframes de forma diferida al hacer scroll. Mejora significativamente el tiempo de carga en páginas con videos embebidos o widgets externos.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Reemplazar YouTube por Miniatura', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[youtube_facade_enabled]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[youtube_facade_enabled]"
+                                   value="1"
+                                   <?php checked( $settings['youtube_facade_enabled'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Reemplaza los iframes de YouTube por una imagen de miniatura en alta resolución. El video real solo se carga cuando el usuario hace clic. Ahorra ~500 KB por video embebido.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="etr-media-exclusions">
+                            <?php esc_html_e( 'Excluir del Lazy Load', 'el-tronador' ); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <textarea id="etr-media-exclusions"
+                                  name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[media_lazy_exclusions]"
+                                  class="etr-exclusions-textarea"
+                                  rows="6"><?php echo esc_textarea( $settings['media_lazy_exclusions'] ); ?></textarea>
+                        <p class="description">
+                            <?php esc_html_e( 'Ingresa una clase CSS o nombre de archivo por línea. Las imágenes e iframes que coincidan serán ignorados por el lazy load. Ejemplo: logo, hero-image, no-lazy, mi-banner.jpg', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        <?php endif; ?>
+
         <?php submit_button( __( 'Save Settings', 'el-tronador' ) ); ?>
     </form>
 

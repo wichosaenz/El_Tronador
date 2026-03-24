@@ -31,6 +31,10 @@ class ETR_Admin_Options {
             'minify_js_enabled'             => false,
             'optimize_css_delivery_enabled' => false,
             'file_optimization_exclusions'  => '',
+            'lazy_images_enabled'           => false,
+            'lazy_iframes_enabled'          => false,
+            'youtube_facade_enabled'        => false,
+            'media_lazy_exclusions'         => '',
         ];
     }
 
