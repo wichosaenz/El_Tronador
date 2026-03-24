@@ -40,6 +40,26 @@
 - Las hojas con `media="print"` se omiten (ya son no-bloqueantes).
 - Sistema de exclusiones configurable por el usuario.
 
+### Fase 3 — Optimización de Medios (Lazy Load Inteligente)
+
+#### Lazy Load de Imágenes con Protección LCP
+- Carga las imágenes de forma diferida al hacer scroll usando **Intersection Observer** con un margen de precarga de 200px.
+- **Exclusión automática de LCP**: Las primeras 2 imágenes del HTML (logo y hero) se excluyen del lazy load para no penalizar la métrica Largest Contentful Paint de Google.
+- Reemplaza `src` y `srcset` por atributos `data-etr-lazy-*` con un placeholder SVG transparente.
+- Respeta los atributos nativos `loading="eager"` y `data-no-lazy`.
+- Sistema de exclusiones configurable por clase CSS o nombre de archivo.
+
+#### Lazy Load de Iframes
+- Difiere la carga de iframes (videos, widgets, mapas) hasta que el usuario haga scroll cerca de ellos.
+- Reemplaza el `src` por `about:blank` y restaura la URL real vía Intersection Observer.
+- Mejora significativamente el tiempo de carga en páginas con contenido embebido.
+
+#### Fachada de YouTube (YouTube Facade)
+- Reemplaza los iframes de YouTube por una **miniatura en alta resolución** (`maxresdefault.jpg`) con un botón de play.
+- El iframe real de YouTube solo se inyecta cuando el usuario hace clic en la miniatura.
+- Ahorra aproximadamente **500 KB por video embebido** al evitar cargar el reproductor de YouTube innecesariamente.
+- Compatible con `youtube.com` y `youtube-nocookie.com`.
+
 ### Compatibilidad del Ecosistema
 
 - **Breeze Plugin**: Detecta conflictos y advierte al administrador antes de la activación.
@@ -82,6 +102,12 @@ Después de activar el plugin, navega a **Ajustes > El Tronador** en tu panel de
 - **Optimizar Entrega de CSS**: Convierte hojas de estilo bloqueantes a carga diferida.
 - **Excluir Archivos CSS/JS**: Campo de texto para ingresar URLs o palabras clave (una por línea) que el optimizador debe ignorar. Ejemplo: `jquery.js`, `elementor`, `mi-plugin/assets/`.
 
+### Pestaña Medios
+- **Lazy Load para Imágenes**: Activa la carga diferida de imágenes con protección automática de LCP (primeras 2 imágenes excluidas).
+- **Lazy Load para Iframes/Videos**: Activa la carga diferida de iframes embebidos.
+- **Reemplazar YouTube por Miniatura**: Sustituye los iframes de YouTube por una imagen de miniatura ligera. El video se carga al hacer clic.
+- **Excluir del Lazy Load**: Campo de texto para ingresar clases CSS o nombres de archivo (uno por línea) que el lazy load debe ignorar. Ejemplo: `logo`, `hero-image`, `mi-banner.jpg`.
+
 ### Gestión de Caché
 - **Purgar Todo el Caché**: Disponible en la página de ajustes y en la barra de administración. Limpia las páginas cacheadas, los archivos minificados y el caché de objetos (Redis/Object Cache Pro).
 
@@ -108,7 +134,7 @@ El Tronador está construido con un patrón de **Registro de Módulos** diseñad
 
 - [x] **Fase 1** — Caché de Página Estática + Delay JS
 - [x] **Fase 2** — Optimización de Archivos (Minificación CSS/JS, CSS Crítico)
-- [ ] **Fase 3** — Optimización de Medios (Lazy Load Inteligente excluyendo LCP)
+- [x] **Fase 3** — Optimización de Medios (Lazy Load Inteligente excluyendo LCP)
 - [ ] **Fase 4** — Optimización de Base de Datos (transients, revisiones, opciones expiradas)
 - [ ] **Fase 5** — Motor de Precarga (bot rastreador de sitemap)
 

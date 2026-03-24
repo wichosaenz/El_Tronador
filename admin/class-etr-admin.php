@@ -74,6 +74,10 @@ class ETR_Admin {
             'minify_js_enabled'             => ! empty( $input['minify_js_enabled'] ),
             'optimize_css_delivery_enabled' => ! empty( $input['optimize_css_delivery_enabled'] ),
             'file_optimization_exclusions'  => sanitize_textarea_field( $input['file_optimization_exclusions'] ?? '' ),
+            'lazy_images_enabled'           => ! empty( $input['lazy_images_enabled'] ),
+            'lazy_iframes_enabled'          => ! empty( $input['lazy_iframes_enabled'] ),
+            'youtube_facade_enabled'        => ! empty( $input['youtube_facade_enabled'] ),
+            'media_lazy_exclusions'         => sanitize_textarea_field( $input['media_lazy_exclusions'] ?? '' ),
         ];
     }
 
@@ -127,8 +131,8 @@ class ETR_Admin {
         return [
             'general'           => __( 'General', 'el-tronador' ),
             'file_optimization' => __( 'Optimización de Archivos', 'el-tronador' ),
+            'media'             => __( 'Medios', 'el-tronador' ),
             // Future tabs:
-            // 'media'    => __( 'Media', 'el-tronador' ),
             // 'database' => __( 'Database', 'el-tronador' ),
             // 'preload'  => __( 'Preload', 'el-tronador' ),
         ];
