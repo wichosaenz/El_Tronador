@@ -98,6 +98,29 @@
     padding: 6px 20px !important;
 }
 
+/* Status summary table */
+.etr-status-table {
+    max-width: 500px;
+    margin-bottom: 20px;
+}
+
+.etr-status-table th,
+.etr-status-table td {
+    padding: 8px 12px;
+}
+
+.etr-status-on {
+    color: #00a32a;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.etr-status-off {
+    color: #d63638;
+    font-size: 18px;
+    font-weight: bold;
+}
+
 /* Footer */
 .etr-footer {
     margin-top: 30px;

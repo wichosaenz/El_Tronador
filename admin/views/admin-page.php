@@ -31,7 +31,62 @@ $purge_url   = wp_nonce_url( admin_url( 'admin.php?action=etr_purge_cache' ), 'e
     <form method="post" action="options.php" class="etr-settings-form">
         <?php settings_fields( 'etr_settings_group' ); ?>
 
+        <?php
+        // Hidden inputs for ALL settings so inactive tabs are preserved on save.
+        // Visible inputs in the active tab override these (PHP uses last occurrence).
+        foreach ( ETR_Admin_Options::defaults() as $key => $default ) :
+            $val = $settings[ $key ] ?? $default;
+            if ( is_bool( $val ) ) {
+                $val = $val ? '1' : '0';
+            }
+        ?>
+            <input type="hidden"
+                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[<?php echo esc_attr( $key ); ?>]"
+                   value="<?php echo esc_attr( $val ); ?>">
+        <?php endforeach; ?>
+
         <?php if ( 'general' === $current_tab ) : ?>
+
+            <!-- Status summary table -->
+            <h2><?php esc_html_e( 'Estado Global de Módulos', 'el-tronador' ); ?></h2>
+            <table class="widefat etr-status-table">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e( 'Módulo', 'el-tronador' ); ?></th>
+                        <th><?php esc_html_e( 'Estado', 'el-tronador' ); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $status_items = [
+                        'page_cache_enabled'            => __( 'Page Cache', 'el-tronador' ),
+                        'delay_js_enabled'              => __( 'Delay JavaScript', 'el-tronador' ),
+                        'minify_css_enabled'            => __( 'Minificar CSS', 'el-tronador' ),
+                        'minify_js_enabled'             => __( 'Minificar JS', 'el-tronador' ),
+                        'optimize_css_delivery_enabled' => __( 'Optimizar Entrega de CSS', 'el-tronador' ),
+                        'lazy_images_enabled'           => __( 'Lazy Load Imágenes', 'el-tronador' ),
+                        'lazy_iframes_enabled'          => __( 'Lazy Load Iframes', 'el-tronador' ),
+                        'youtube_facade_enabled'        => __( 'YouTube Facade', 'el-tronador' ),
+                        'db_auto_cleanup'               => __( 'Limpieza Automática BD', 'el-tronador' ),
+                        'preload_enabled'               => __( 'Motor de Precarga', 'el-tronador' ),
+                    ];
+                    foreach ( $status_items as $key => $label ) :
+                        $enabled = ! empty( $settings[ $key ] );
+                    ?>
+                        <tr>
+                            <td><?php echo esc_html( $label ); ?></td>
+                            <td>
+                                <?php if ( $enabled ) : ?>
+                                    <span class="etr-status-on" title="<?php esc_attr_e( 'Activado', 'el-tronador' ); ?>">&#10003;</span>
+                                <?php else : ?>
+                                    <span class="etr-status-off" title="<?php esc_attr_e( 'Desactivado', 'el-tronador' ); ?>">&#10007;</span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
             <table class="form-table" role="presentation">
                 <tr>
                     <th scope="row">

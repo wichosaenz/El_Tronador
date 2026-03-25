@@ -71,28 +71,10 @@ class ETR_Admin {
             $input = [];
         }
 
-        // Merge with saved settings so fields from other tabs are preserved.
-        // The form only submits fields for the active tab; without this merge
-        // every other tab's settings would be reset to false/empty on save.
-        $saved = ETR_Admin_Options::get_all();
-
-        // Determine which tab is being saved based on submitted keys.
-        $tab_fields = self::get_tab_fields();
-        $active_tab = '';
-
-        foreach ( $tab_fields as $tab => $fields ) {
-            // Check if ANY key from this tab is present in $input.
-            foreach ( $fields as $field ) {
-                if ( array_key_exists( $field, $input ) ) {
-                    $active_tab = $tab;
-                    break 2;
-                }
-            }
-        }
-
-        // Build sanitized values: only override fields from the active tab,
-        // keep saved values for all other tabs.
-        $sanitized = [
+        // The form includes hidden inputs for ALL settings (not just the
+        // active tab), so $input always contains every key.  This removes
+        // the need for tab-detection or merge logic — just sanitize.
+        return [
             'page_cache_enabled'            => ! empty( $input['page_cache_enabled'] ),
             'delay_js_enabled'              => ! empty( $input['delay_js_enabled'] ),
             'minify_css_enabled'            => ! empty( $input['minify_css_enabled'] ),
@@ -110,58 +92,6 @@ class ETR_Admin {
             'db_auto_cleanup'               => ! empty( $input['db_auto_cleanup'] ),
             'preload_enabled'               => ! empty( $input['preload_enabled'] ),
             'preload_sitemap_url'           => esc_url_raw( trim( $input['preload_sitemap_url'] ?? '' ) ),
-        ];
-
-        // Restore saved values for fields NOT belonging to the active tab.
-        if ( ! empty( $active_tab ) ) {
-            $active_fields = $tab_fields[ $active_tab ] ?? [];
-            foreach ( $sanitized as $key => $value ) {
-                if ( ! in_array( $key, $active_fields, true ) && array_key_exists( $key, $saved ) ) {
-                    $sanitized[ $key ] = $saved[ $key ];
-                }
-            }
-        }
-
-        return $sanitized;
-    }
-
-    /**
-     * Map of tab slugs to their form field keys.
-     *
-     * Used by sanitize_settings() to determine which tab is being saved
-     * and preserve settings from other tabs.
-     *
-     * @return array<string, string[]>
-     */
-    private static function get_tab_fields(): array {
-        return [
-            'general'           => [
-                'page_cache_enabled',
-                'delay_js_enabled',
-            ],
-            'file_optimization' => [
-                'minify_css_enabled',
-                'minify_js_enabled',
-                'optimize_css_delivery_enabled',
-                'file_optimization_exclusions',
-            ],
-            'media'             => [
-                'lazy_images_enabled',
-                'lazy_iframes_enabled',
-                'youtube_facade_enabled',
-                'media_lazy_exclusions',
-            ],
-            'database'          => [
-                'db_clean_revisions',
-                'db_clean_drafts',
-                'db_clean_spam',
-                'db_clean_transients',
-                'db_auto_cleanup',
-            ],
-            'preload'           => [
-                'preload_enabled',
-                'preload_sitemap_url',
-            ],
         ];
     }
 
