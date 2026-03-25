@@ -58,20 +58,8 @@ class ETR_Delay_Js implements ETR_Module_Interface {
             return;
         }
 
-        // Use high priority so we modify the HTML after other plugins have added their scripts.
-        add_action( 'template_redirect', [ $this, 'start_buffer' ], 99 );
-    }
-
-    /**
-     * Start output buffering to intercept the final HTML.
-     */
-    public function start_buffer(): void {
-        // Skip for logged-in admins to avoid breaking the admin bar.
-        if ( current_user_can( 'manage_options' ) ) {
-            return;
-        }
-
-        ob_start( [ $this, 'process_html' ] );
+        // Register as a processor in the unified output buffer (priority 99).
+        ETR_Output_Buffer::instance()->register_processor( [ $this, 'process_html' ], 99 );
     }
 
     /**

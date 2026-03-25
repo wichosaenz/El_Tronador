@@ -3,7 +3,7 @@
  * Plugin Name:       El Tronador
  * Plugin URI:        https://github.com/wichosaenz/El_Tronador
  * Description:       Cache and performance optimization plugin for WordPress. Static page cache, Delay JS, and more.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            wichosaenz
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin constants.
  */
-define( 'ETR_VERSION', '1.0.2' );
+define( 'ETR_VERSION', '1.0.3' );
 define( 'ETR_PLUGIN_FILE', __FILE__ );
 define( 'ETR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ETR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

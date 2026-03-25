@@ -73,27 +73,8 @@ class ETR_Page_Cache implements ETR_Module_Interface {
             return;
         }
 
-        ob_start( [ $this, 'capture_output' ] );
-    }
-
-    /**
-     * Output buffer callback — write the captured HTML to disk.
-     *
-     * @param string $html The full page HTML.
-     * @return string Unmodified HTML (passed through to the browser).
-     */
-    public function capture_output( string $html ): string {
-        // Only cache complete HTML pages.
-        if ( strlen( $html ) < 255 || ! str_contains( $html, '</html>' ) ) {
-            return $html;
-        }
-
-        $host = $_SERVER['HTTP_HOST'] ?? '';
-        $uri  = $_SERVER['REQUEST_URI'] ?? '/';
-
-        ETR_Cache_Filesystem::write( $host, $uri, $html );
-
-        return $html;
+        // Tell the unified buffer to write the result to disk.
+        ETR_Output_Buffer::instance()->enable_cache();
     }
 
     /**

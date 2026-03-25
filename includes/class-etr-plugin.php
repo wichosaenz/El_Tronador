@@ -56,8 +56,13 @@ class ETR_Plugin {
         // Register modules.
         $this->register_modules();
 
-        // Boot enabled modules.
+        // Boot enabled modules (each registers processors in the unified buffer).
         $this->registry->boot_all();
+
+        // Start the unified output buffer on the frontend (single ob_start for all processors).
+        if ( ! is_admin() && ! wp_doing_ajax() && ! wp_doing_cron() && ! ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+            add_action( 'template_redirect', [ $this, 'start_output_buffer' ], 0 );
+        }
 
         // Load admin when in dashboard.
         if ( is_admin() ) {
@@ -68,6 +73,22 @@ class ETR_Plugin {
         // Admin bar cache purge button (frontend + backend).
         add_action( 'admin_bar_menu', [ $this, 'add_admin_bar_purge' ], 100 );
         add_action( 'admin_init', [ $this, 'handle_purge_request' ] );
+    }
+
+    /**
+     * Start the unified output buffer for all frontend HTML processing.
+     *
+     * Modules register their process_html() callbacks during boot_all().
+     * This single ob_start() replaces the previous 4 nested buffers,
+     * reducing memory usage and preventing cascading timeout issues.
+     */
+    public function start_output_buffer(): void {
+        // Skip for logged-in admins to avoid breaking the admin bar.
+        if ( current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
+        ETR_Output_Buffer::instance()->start();
     }
 
     /**

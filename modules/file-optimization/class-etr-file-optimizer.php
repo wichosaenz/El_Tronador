@@ -51,19 +51,8 @@ class ETR_File_Optimizer implements ETR_Module_Interface {
             return;
         }
 
-        // Priority 50: after Page Cache (0), before Delay JS (99).
-        add_action( 'template_redirect', [ $this, 'start_buffer' ], 50 );
-    }
-
-    /**
-     * Start output buffering to process the final HTML.
-     */
-    public function start_buffer(): void {
-        if ( current_user_can( 'manage_options' ) ) {
-            return;
-        }
-
-        ob_start( [ $this, 'process_html' ] );
+        // Register as a processor in the unified output buffer (priority 50).
+        ETR_Output_Buffer::instance()->register_processor( [ $this, 'process_html' ], 50 );
     }
 
     /**
