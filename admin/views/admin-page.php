@@ -317,8 +317,82 @@ $purge_url   = wp_nonce_url( admin_url( 'admin.php?action=etr_purge_cache' ), 'e
             </table>
         <?php endif; ?>
 
+        <?php if ( 'preload' === $current_tab ) : ?>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Motor de Precarga', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[preload_enabled]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[preload_enabled]"
+                                   value="1"
+                                   <?php checked( $settings['preload_enabled'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Activa el bot rastreador que calienta la caché visitando automáticamente las URLs de tu sitemap. Procesa lotes de 25 URLs cada 5 minutos.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="etr-sitemap-url">
+                            <?php esc_html_e( 'URL del Sitemap', 'el-tronador' ); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <input type="url"
+                               id="etr-sitemap-url"
+                               name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[preload_sitemap_url]"
+                               value="<?php echo esc_attr( $settings['preload_sitemap_url'] ); ?>"
+                               class="regular-text"
+                               placeholder="<?php echo esc_attr( home_url( '/wp-sitemap.xml' ) ); ?>">
+                        <p class="description">
+                            <?php esc_html_e( 'URL completa de tu sitemap XML. Déjalo vacío para usar el sitemap predeterminado de WordPress (/wp-sitemap.xml). Compatible con sitemaps de Yoast SEO, Rank Math, etc.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Estado de la Cola', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <?php
+                        $queue_size = ETR_Preload_Engine::get_queue_size();
+                        if ( $queue_size > 0 ) :
+                            printf(
+                                /* translators: %d: number of URLs remaining */
+                                esc_html__( '%d URLs pendientes en la cola de precarga.', 'el-tronador' ),
+                                $queue_size
+                            );
+                        else :
+                            esc_html_e( 'La cola de precarga está vacía. Todas las páginas han sido procesadas o la precarga no se ha iniciado.', 'el-tronador' );
+                        endif;
+                        ?>
+                    </td>
+                </tr>
+            </table>
+        <?php endif; ?>
+
         <?php submit_button( __( 'Save Settings', 'el-tronador' ) ); ?>
     </form>
+
+    <?php if ( 'preload' === $current_tab ) : ?>
+        <!-- Preload now action button -->
+        <div class="etr-purge-section etr-db-cleanup-section">
+            <h2><?php esc_html_e( 'Precarga Manual', 'el-tronador' ); ?></h2>
+            <p><?php esc_html_e( 'Lee el sitemap y llena la cola de precarga ahora mismo. Las URLs se procesarán en lotes cada 5 minutos.', 'el-tronador' ); ?></p>
+            <form method="post">
+                <?php wp_nonce_field( 'etr_preload_now' ); ?>
+                <button type="submit" name="etr_preload_now" value="1" class="button button-primary etr-cleanup-btn">
+                    <?php esc_html_e( '¡Ejecutar Precarga Ahora!', 'el-tronador' ); ?>
+                </button>
+            </form>
+        </div>
+    <?php endif; ?>
 
     <?php if ( 'database' === $current_tab ) : ?>
         <!-- Database cleanup action button -->

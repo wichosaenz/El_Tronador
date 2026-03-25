@@ -77,6 +77,27 @@
 - El evento cron se programa/desprograma automáticamente según la configuración del usuario.
 - Botón de **"¡Hacer limpieza ahora!"** para ejecución manual inmediata desde el panel de administración.
 
+### Fase 5 — Motor de Precarga (Sitemap Crawler Bot)
+
+#### Bot Rastreador de Sitemap
+- Lee automáticamente el archivo XML del sitemap del sitio (compatible con sitemaps de WordPress, Yoast SEO, Rank Math, etc.).
+- Soporta sitemaps índice (`<sitemapindex>`) que contienen múltiples sub-sitemaps.
+- Construye una cola de precarga con todas las URLs del sitio.
+
+#### Procesamiento por Lotes
+- Procesa **25 URLs por lote** cada **5 minutos** mediante un evento recurrente de WP-Cron.
+- Cada petición HTTP usa `wp_remote_get` con un timeout bajo (3 segundos) y modo no bloqueante para no afectar el rendimiento del servidor.
+- La cola se elimina automáticamente cuando todas las URLs han sido procesadas.
+
+#### Disparadores Automáticos
+- **Publicación de contenido**: Al guardar o actualizar un post publicado (`save_post`), la cola se reconstruye automáticamente.
+- **Purga de caché**: Al purgar toda la caché desde el panel o la barra de admin, la cola se reconstruye para re-calentar las páginas.
+
+#### Administración
+- URL del sitemap configurable (por defecto `/wp-sitemap.xml`).
+- Indicador del estado de la cola (URLs pendientes).
+- Botón de **"¡Ejecutar Precarga Ahora!"** para iniciar la precarga manual inmediata.
+
 ### Compatibilidad del Ecosistema
 
 - **Breeze Plugin**: Detecta conflictos y advierte al administrador antes de la activación.
@@ -125,6 +146,12 @@ Después de activar el plugin, navega a **Ajustes > El Tronador** en tu panel de
 - **Reemplazar YouTube por Miniatura**: Sustituye los iframes de YouTube por una imagen de miniatura ligera. El video se carga al hacer clic.
 - **Excluir del Lazy Load**: Campo de texto para ingresar clases CSS o nombres de archivo (uno por línea) que el lazy load debe ignorar. Ejemplo: `logo`, `hero-image`, `mi-banner.jpg`.
 
+### Pestaña Precarga
+- **Motor de Precarga**: Activa o desactiva el bot rastreador que calienta la caché visitando las URLs del sitemap.
+- **URL del Sitemap**: Campo de texto para ingresar la URL completa del sitemap XML. Déjalo vacío para usar el sitemap predeterminado de WordPress (`/wp-sitemap.xml`).
+- **Estado de la Cola**: Muestra el número de URLs pendientes en la cola de precarga.
+- **¡Ejecutar Precarga Ahora!**: Botón para leer el sitemap y llenar la cola de precarga inmediatamente.
+
 ### Pestaña Base de Datos
 - **Limpiar Revisiones**: Activa la limpieza de todas las revisiones de posts.
 - **Limpiar Borradores y Papelera**: Activa la limpieza de auto-drafts y posts en papelera.
@@ -161,7 +188,7 @@ El Tronador está construido con un patrón de **Registro de Módulos** diseñad
 - [x] **Fase 2** — Optimización de Archivos (Minificación CSS/JS, CSS Crítico)
 - [x] **Fase 3** — Optimización de Medios (Lazy Load Inteligente excluyendo LCP)
 - [x] **Fase 4** — Optimización de Base de Datos (transients, revisiones, opciones expiradas)
-- [ ] **Fase 5** — Motor de Precarga (bot rastreador de sitemap)
+- [x] **Fase 5** — Motor de Precarga (bot rastreador de sitemap)
 
 ## Licencia
 

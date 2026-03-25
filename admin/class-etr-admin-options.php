@@ -40,6 +40,8 @@ class ETR_Admin_Options {
             'db_clean_spam'                 => false,
             'db_clean_transients'           => false,
             'db_auto_cleanup'               => false,
+            'preload_enabled'               => false,
+            'preload_sitemap_url'           => '',
         ];
     }
 

@@ -33,6 +33,7 @@ class ETR_Autoloader {
                 $base . 'modules/file-optimization/',
                 $base . 'modules/media-optimizer/',
                 $base . 'modules/database-optimizer/',
+                $base . 'modules/preload-engine/',
             ],
         ];
 

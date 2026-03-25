@@ -25,6 +25,8 @@ class ETR_Admin {
         add_action( 'admin_menu', [ $this, 'add_menu_page' ] );
         add_action( 'admin_init', [ $this, 'register_settings' ] );
         add_action( 'admin_init', [ $this, 'handle_db_cleanup_request' ] );
+        add_action( 'admin_init', [ $this, 'handle_preload_request' ] );
+        add_action( 'admin_notices', [ $this, 'display_preload_notice' ] );
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
         add_action( 'admin_notices', [ $this, 'display_purge_notice' ] );
         add_action( 'admin_notices', [ $this, 'display_db_cleanup_notice' ] );
@@ -85,6 +87,8 @@ class ETR_Admin {
             'db_clean_spam'                 => ! empty( $input['db_clean_spam'] ),
             'db_clean_transients'           => ! empty( $input['db_clean_transients'] ),
             'db_auto_cleanup'               => ! empty( $input['db_auto_cleanup'] ),
+            'preload_enabled'               => ! empty( $input['preload_enabled'] ),
+            'preload_sitemap_url'           => esc_url_raw( trim( $input['preload_sitemap_url'] ?? '' ) ),
         ];
     }
 
@@ -175,6 +179,47 @@ class ETR_Admin {
     }
 
     /**
+     * Handle the "Run Preload Now" action.
+     */
+    public function handle_preload_request(): void {
+        if ( ! isset( $_POST['etr_preload_now'] ) ) {
+            return;
+        }
+
+        if ( ! current_user_can( 'manage_options' ) || ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'etr_preload_now' ) ) {
+            wp_die( __( 'Unauthorized request.', 'el-tronador' ) );
+        }
+
+        $engine = new ETR_Preload_Engine();
+        $count  = $engine->build_queue();
+
+        set_transient( 'etr_preload_result', $count, 60 );
+
+        wp_safe_redirect( wp_get_referer() ?: admin_url( 'options-general.php?page=el-tronador&tab=preload' ) );
+        exit;
+    }
+
+    /**
+     * Show a notice with preload results.
+     */
+    public function display_preload_notice(): void {
+        $count = get_transient( 'etr_preload_result' );
+        if ( false === $count ) {
+            return;
+        }
+
+        delete_transient( 'etr_preload_result' );
+
+        echo '<div class="notice notice-success is-dismissible"><p>';
+        printf(
+            /* translators: %d: number of URLs queued */
+            esc_html__( 'El Tronador — Precarga iniciada: %d URLs en cola. Se procesarán en lotes cada 5 minutos.', 'el-tronador' ),
+            (int) $count
+        );
+        echo '</p></div>';
+    }
+
+    /**
      * Render the settings page.
      */
     public function render_page(): void {
@@ -196,8 +241,7 @@ class ETR_Admin {
             'file_optimization' => __( 'Optimización de Archivos', 'el-tronador' ),
             'media'             => __( 'Medios', 'el-tronador' ),
             'database'          => __( 'Base de Datos', 'el-tronador' ),
-            // Future tabs:
-            // 'preload'  => __( 'Preload', 'el-tronador' ),
+            'preload'           => __( 'Precarga', 'el-tronador' ),
         ];
     }
 }
