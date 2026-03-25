@@ -222,8 +222,117 @@ $purge_url   = wp_nonce_url( admin_url( 'admin.php?action=etr_purge_cache' ), 'e
             </table>
         <?php endif; ?>
 
+        <?php if ( 'database' === $current_tab ) : ?>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Limpiar Revisiones', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[db_clean_revisions]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[db_clean_revisions]"
+                                   value="1"
+                                   <?php checked( $settings['db_clean_revisions'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Elimina todas las revisiones de posts. Los posts publicados y sus versiones actuales no se tocan.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Limpiar Borradores y Papelera', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[db_clean_drafts]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[db_clean_drafts]"
+                                   value="1"
+                                   <?php checked( $settings['db_clean_drafts'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Elimina borradores automáticos (auto-drafts) y posts en la papelera.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Limpiar Spam y Papelera de Comentarios', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[db_clean_spam]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[db_clean_spam]"
+                                   value="1"
+                                   <?php checked( $settings['db_clean_spam'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Elimina comentarios marcados como spam y comentarios en la papelera.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Limpiar Transients Expirados', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[db_clean_transients]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[db_clean_transients]"
+                                   value="1"
+                                   <?php checked( $settings['db_clean_transients'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Elimina todos los transients expirados de la tabla de opciones de WordPress.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <?php esc_html_e( 'Limpieza Automática Semanal', 'el-tronador' ); ?>
+                    </th>
+                    <td>
+                        <label class="etr-toggle">
+                            <input type="hidden" name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[db_auto_cleanup]" value="0">
+                            <input type="checkbox"
+                                   name="<?php echo esc_attr( ETR_Admin_Options::OPTION_KEY ); ?>[db_auto_cleanup]"
+                                   value="1"
+                                   <?php checked( $settings['db_auto_cleanup'] ); ?>>
+                            <span class="etr-toggle-slider"></span>
+                        </label>
+                        <p class="description">
+                            <?php esc_html_e( 'Ejecuta automáticamente la limpieza de los elementos seleccionados una vez por semana mediante WP-Cron.', 'el-tronador' ); ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        <?php endif; ?>
+
         <?php submit_button( __( 'Save Settings', 'el-tronador' ) ); ?>
     </form>
+
+    <?php if ( 'database' === $current_tab ) : ?>
+        <!-- Database cleanup action button -->
+        <div class="etr-purge-section etr-db-cleanup-section">
+            <h2><?php esc_html_e( 'Limpieza Manual', 'el-tronador' ); ?></h2>
+            <p><?php esc_html_e( 'Ejecuta la limpieza ahora mismo con las opciones seleccionadas arriba. Asegúrate de guardar los cambios primero.', 'el-tronador' ); ?></p>
+            <form method="post">
+                <?php wp_nonce_field( 'etr_db_cleanup' ); ?>
+                <button type="submit" name="etr_db_cleanup" value="1" class="button button-primary etr-cleanup-btn">
+                    <?php esc_html_e( '¡Hacer limpieza ahora!', 'el-tronador' ); ?>
+                </button>
+            </form>
+        </div>
+    <?php endif; ?>
 
     <!-- Purge cache button -->
     <div class="etr-purge-section">

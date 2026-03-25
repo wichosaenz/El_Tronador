@@ -60,6 +60,23 @@
 - Ahorra aproximadamente **500 KB por video embebido** al evitar cargar el reproductor de YouTube innecesariamente.
 - Compatible con `youtube.com` y `youtube-nocookie.com`.
 
+### Fase 4 — Optimización de Base de Datos
+
+#### Limpieza de Contenido
+- Elimina revisiones de posts de forma segura, dejando intacto el post original publicado y su versión actual.
+- Limpia borradores automáticos (auto-drafts) y posts en la papelera, incluyendo sus metadatos asociados.
+
+#### Limpieza de Comentarios
+- Elimina comentarios marcados como spam y comentarios en la papelera, incluyendo sus metadatos.
+
+#### Limpieza de Transients
+- Elimina todos los transients expirados de la tabla de opciones de WordPress usando `delete_transient()` para máxima compatibilidad.
+
+#### Limpieza Automática Programada
+- Opción para activar una limpieza automática semanal mediante WP-Cron.
+- El evento cron se programa/desprograma automáticamente según la configuración del usuario.
+- Botón de **"¡Hacer limpieza ahora!"** para ejecución manual inmediata desde el panel de administración.
+
 ### Compatibilidad del Ecosistema
 
 - **Breeze Plugin**: Detecta conflictos y advierte al administrador antes de la activación.
@@ -108,6 +125,14 @@ Después de activar el plugin, navega a **Ajustes > El Tronador** en tu panel de
 - **Reemplazar YouTube por Miniatura**: Sustituye los iframes de YouTube por una imagen de miniatura ligera. El video se carga al hacer clic.
 - **Excluir del Lazy Load**: Campo de texto para ingresar clases CSS o nombres de archivo (uno por línea) que el lazy load debe ignorar. Ejemplo: `logo`, `hero-image`, `mi-banner.jpg`.
 
+### Pestaña Base de Datos
+- **Limpiar Revisiones**: Activa la limpieza de todas las revisiones de posts.
+- **Limpiar Borradores y Papelera**: Activa la limpieza de auto-drafts y posts en papelera.
+- **Limpiar Spam y Papelera de Comentarios**: Activa la limpieza de comentarios spam y en papelera.
+- **Limpiar Transients Expirados**: Activa la limpieza de transients expirados de la base de datos.
+- **Limpieza Automática Semanal**: Programa una tarea WP-Cron para ejecutar la limpieza automáticamente cada semana.
+- **¡Hacer limpieza ahora!**: Botón para ejecutar la limpieza manual inmediata con las opciones seleccionadas.
+
 ### Gestión de Caché
 - **Purgar Todo el Caché**: Disponible en la página de ajustes y en la barra de administración. Limpia las páginas cacheadas, los archivos minificados y el caché de objetos (Redis/Object Cache Pro).
 
@@ -135,7 +160,7 @@ El Tronador está construido con un patrón de **Registro de Módulos** diseñad
 - [x] **Fase 1** — Caché de Página Estática + Delay JS
 - [x] **Fase 2** — Optimización de Archivos (Minificación CSS/JS, CSS Crítico)
 - [x] **Fase 3** — Optimización de Medios (Lazy Load Inteligente excluyendo LCP)
-- [ ] **Fase 4** — Optimización de Base de Datos (transients, revisiones, opciones expiradas)
+- [x] **Fase 4** — Optimización de Base de Datos (transients, revisiones, opciones expiradas)
 - [ ] **Fase 5** — Motor de Precarga (bot rastreador de sitemap)
 
 ## Licencia

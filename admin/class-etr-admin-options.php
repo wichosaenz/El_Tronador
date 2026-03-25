@@ -35,6 +35,11 @@ class ETR_Admin_Options {
             'lazy_iframes_enabled'          => false,
             'youtube_facade_enabled'        => false,
             'media_lazy_exclusions'         => '',
+            'db_clean_revisions'            => false,
+            'db_clean_drafts'               => false,
+            'db_clean_spam'                 => false,
+            'db_clean_transients'           => false,
+            'db_auto_cleanup'               => false,
         ];
     }
 

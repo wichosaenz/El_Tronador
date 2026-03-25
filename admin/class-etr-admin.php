@@ -24,8 +24,10 @@ class ETR_Admin {
     public function init(): void {
         add_action( 'admin_menu', [ $this, 'add_menu_page' ] );
         add_action( 'admin_init', [ $this, 'register_settings' ] );
+        add_action( 'admin_init', [ $this, 'handle_db_cleanup_request' ] );
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
         add_action( 'admin_notices', [ $this, 'display_purge_notice' ] );
+        add_action( 'admin_notices', [ $this, 'display_db_cleanup_notice' ] );
     }
 
     /**
@@ -78,6 +80,11 @@ class ETR_Admin {
             'lazy_iframes_enabled'          => ! empty( $input['lazy_iframes_enabled'] ),
             'youtube_facade_enabled'        => ! empty( $input['youtube_facade_enabled'] ),
             'media_lazy_exclusions'         => sanitize_textarea_field( $input['media_lazy_exclusions'] ?? '' ),
+            'db_clean_revisions'            => ! empty( $input['db_clean_revisions'] ),
+            'db_clean_drafts'               => ! empty( $input['db_clean_drafts'] ),
+            'db_clean_spam'                 => ! empty( $input['db_clean_spam'] ),
+            'db_clean_transients'           => ! empty( $input['db_clean_transients'] ),
+            'db_auto_cleanup'               => ! empty( $input['db_auto_cleanup'] ),
         ];
     }
 
@@ -112,6 +119,62 @@ class ETR_Admin {
     }
 
     /**
+     * Handle the "Clean Now" database action.
+     */
+    public function handle_db_cleanup_request(): void {
+        if ( ! isset( $_POST['etr_db_cleanup'] ) ) {
+            return;
+        }
+
+        if ( ! current_user_can( 'manage_options' ) || ! wp_verify_nonce( $_POST['_wpnonce'] ?? '', 'etr_db_cleanup' ) ) {
+            wp_die( __( 'Unauthorized request.', 'el-tronador' ) );
+        }
+
+        $optimizer = new ETR_Database_Optimizer();
+        $results   = $optimizer->run_cleanup();
+
+        set_transient( 'etr_db_cleanup_results', $results, 60 );
+
+        wp_safe_redirect( wp_get_referer() ?: admin_url( 'options-general.php?page=el-tronador&tab=database' ) );
+        exit;
+    }
+
+    /**
+     * Show a notice with database cleanup results.
+     */
+    public function display_db_cleanup_notice(): void {
+        $results = get_transient( 'etr_db_cleanup_results' );
+        if ( ! $results || ! is_array( $results ) ) {
+            return;
+        }
+
+        delete_transient( 'etr_db_cleanup_results' );
+
+        $messages = [];
+        if ( isset( $results['revisions'] ) ) {
+            $messages[] = sprintf( __( 'Revisiones: %d eliminadas', 'el-tronador' ), $results['revisions'] );
+        }
+        if ( isset( $results['drafts'] ) ) {
+            $messages[] = sprintf( __( 'Borradores/Papelera: %d eliminados', 'el-tronador' ), $results['drafts'] );
+        }
+        if ( isset( $results['spam'] ) ) {
+            $messages[] = sprintf( __( 'Spam/Papelera comentarios: %d eliminados', 'el-tronador' ), $results['spam'] );
+        }
+        if ( isset( $results['transients'] ) ) {
+            $messages[] = sprintf( __( 'Transients expirados: %d eliminados', 'el-tronador' ), $results['transients'] );
+        }
+
+        if ( empty( $messages ) ) {
+            return;
+        }
+
+        echo '<div class="notice notice-success is-dismissible"><p>';
+        echo '<strong>' . esc_html__( 'El Tronador — Limpieza completada:', 'el-tronador' ) . '</strong><br>';
+        echo esc_html( implode( ' | ', $messages ) );
+        echo '</p></div>';
+    }
+
+    /**
      * Render the settings page.
      */
     public function render_page(): void {
@@ -132,8 +195,8 @@ class ETR_Admin {
             'general'           => __( 'General', 'el-tronador' ),
             'file_optimization' => __( 'Optimización de Archivos', 'el-tronador' ),
             'media'             => __( 'Medios', 'el-tronador' ),
+            'database'          => __( 'Base de Datos', 'el-tronador' ),
             // Future tabs:
-            // 'database' => __( 'Database', 'el-tronador' ),
             // 'preload'  => __( 'Preload', 'el-tronador' ),
         ];
     }
