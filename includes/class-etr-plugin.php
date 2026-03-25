@@ -85,6 +85,12 @@ class ETR_Plugin {
 
         $media_optimizer = new ETR_Media_Optimizer();
         $this->registry->register( $media_optimizer );
+
+        $database_optimizer = new ETR_Database_Optimizer();
+        $this->registry->register( $database_optimizer );
+
+        $preload_engine = new ETR_Preload_Engine();
+        $this->registry->register( $preload_engine );
     }
 
     /**
@@ -132,6 +138,12 @@ class ETR_Plugin {
         // Flush object cache (Object Cache Pro / Redis compatibility).
         if ( function_exists( 'wp_cache_flush' ) ) {
             wp_cache_flush();
+        }
+
+        // Rebuild preload queue after cache purge so pages get re-warmed.
+        $preload = new ETR_Preload_Engine();
+        if ( $preload->is_enabled() ) {
+            $preload->build_queue();
         }
 
         // Redirect back with success notice.

@@ -87,6 +87,17 @@
     font-size: 13px;
 }
 
+/* Database cleanup section */
+.etr-db-cleanup-section {
+    border-left: 4px solid #2271b1;
+}
+
+.etr-cleanup-btn {
+    margin-top: 10px !important;
+    font-size: 14px !important;
+    padding: 6px 20px !important;
+}
+
 /* Footer */
 .etr-footer {
     margin-top: 30px;

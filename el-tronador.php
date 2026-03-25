@@ -54,6 +54,8 @@ register_activation_hook( __FILE__, function (): void {
 register_deactivation_hook( __FILE__, function (): void {
     ETR_Page_Cache::uninstall_advanced_cache();
     ETR_Cache_Filesystem::purge_all();
+    ETR_Database_Optimizer::unschedule_cron();
+    ETR_Preload_Engine::unschedule_cron();
 } );
 
 /**
